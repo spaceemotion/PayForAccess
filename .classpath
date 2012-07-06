@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="lib" path="bukkit-1.2.5-R4.1-20120629.003618-18.jar"/>
+	<classpathentry kind="lib" path="Vault.jar"/>
+	<classpathentry kind="lib" path="WorldGuard.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>

@@ -1,0 +1,57 @@
+name: PayForAccess
+main: com.spaceemotion.payforaccess.PayForAccessPlugin
+version: 1.0
+author: SpaceEmotion
+
+permissions:
+  payforaccess.*:
+    description: Gives access to all PayForAccess commands
+    children:
+      payforaccess.add: true
+      payforaccess.create: true
+      payforaccess.edit: true
+      payforaccess.help: true
+      payforaccess.list: true
+      payforaccess.remove: true
+      payforaccess.select: true
+
+  payforaccess.add:
+    description: Add a trigger to a region trigger
+    default: op
+
+  payforaccess.buy:
+    description: Buy a region
+    default: true
+
+  payforaccess.create:
+    description: Create a new region trigger
+    default: op
+
+  payforaccess.edit:
+    description: Gives access to all PayForAccess commands to edit a trigger
+    default: op
+    children:
+      payforaccess.add: true
+
+  payforaccess.help:
+    description: See the PayForAccess help page
+    default: op
+    
+  payforaccess.list:
+    description: List all registered triggers
+    default: true
+    
+  payforaccess.remove:
+    description: Remove a trigger
+    default: op
+    
+  payforaccess.select:
+    description: Select a trigger for further editing
+    default: op
+
+commands:
+  pfa:
+    description: PayToEnter Main command
+    usage: /<command> help
+    permission: payforaccess.help
+    aliases: ["payforaccess","pay4access", "payfa", "pfaccess"]

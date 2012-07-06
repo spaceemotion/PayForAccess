@@ -1,0 +1,3 @@
+language: "english"
+max-block-sight: 120
+triggers: [77]
