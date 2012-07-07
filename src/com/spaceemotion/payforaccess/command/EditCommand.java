@@ -7,7 +7,7 @@ import org.bukkit.entity.Player;
 
 import com.spaceemotion.payforaccess.PayForAccessPlugin;
 import com.spaceemotion.payforaccess.PermissionManager;
-import com.spaceemotion.payforaccess.config.RegionConfigManager;
+import com.spaceemotion.payforaccess.config.SavesConfigManager;
 import com.spaceemotion.payforaccess.util.ChatUtil;
 import com.spaceemotion.payforaccess.util.MessageUtil;
 
@@ -24,7 +24,7 @@ public class EditCommand extends AbstractCommand {
 	public boolean execute(CommandSender sender, String[] args) {
 		Player player = (Player) sender;
 
-		if (!workingRegionIsSet(player.getName())) return false;
+		if (!workingTriggerIsSet(player.getName())) return false;
 
 		if (args.length == 1) {
 			ChatUtil.sendPlayerMessage(player, MessageUtil.parseMessage("edit.info", "price"));
@@ -32,8 +32,8 @@ public class EditCommand extends AbstractCommand {
 			String key = args[1];
 			String value = args[2];
 
-			RegionConfigManager regionManager = plugin.getRegionConfigManager();
-			String region = regionManager.getWorkingRegion(player.getName());
+			SavesConfigManager regionManager = plugin.getRegionConfigManager();
+			String region = regionManager.getWorkingTrigger(player.getName());
 
 			if (key.equalsIgnoreCase("price")) {
 				ConfigurationSection section = regionManager.get().getConfigurationSection(region);

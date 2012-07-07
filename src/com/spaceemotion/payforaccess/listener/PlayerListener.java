@@ -3,6 +3,7 @@ package com.spaceemotion.payforaccess.listener;
 import java.util.ArrayList;
 
 import net.milkbowl.vault.economy.Economy;
+import net.milkbowl.vault.permission.Permission;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -14,7 +15,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.util.Vector;
 
-import com.sk89q.worldguard.domains.DefaultDomain;
 import com.sk89q.worldguard.protection.managers.RegionManager;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import com.spaceemotion.payforaccess.CommandManager;
@@ -45,10 +45,10 @@ public class PlayerListener implements Listener {
 			return;
 		}
 
-		ArrayList<String> regionList = plugin.getRegionConfigManager().getRegionList();
-		if (regionList == null) return;
+		ArrayList<String> list = plugin.getRegionConfigManager().getTriggerList();
+		if (list == null) return;
 
-		for (String name : regionList) {
+		for (String name : list) {
 			ConfigurationSection section = plugin.getRegionConfigManager().get().getConfigurationSection(name);
 
 			ArrayList<String> locationList = (ArrayList<String>) section.getStringList("locations");
@@ -62,38 +62,79 @@ public class PlayerListener implements Listener {
 
 					Location dist = block.getLocation().subtract(lVec);
 
-					if (dist.getBlockX() != 0 && dist.getBlockY() != 0 && dist.getBlockZ() != 0) continue;
+					if (dist.getBlockX() == 0 && dist.getBlockY() == 0 && dist.getBlockZ() == 0) {
+						ArrayList<String> playerList = (ArrayList<String>) plugin.getPlayerConfigManager().getPlayerList().get(name);
 
-					RegionManager regionMng = plugin.getWorldGuard().getRegionManager(player.getWorld());
-					ProtectedRegion region = regionMng.getRegions().get(name);
+						if (playerList == null) {
+							playerList = new ArrayList<String>();
+							plugin.getPlayerConfigManager().getPlayerList().put(name, playerList);
+						} else if (playerList.contains(player.getName())) {
+							/* Already bought access */
+							ChatUtil.sendPlayerMessage(player, MessageUtil.parseMessage("buy.alreadymember", name));
+							return;
+						}
 
-					if (region.isMember(player.getName())) {
-						/* Already bought access */
-						ChatUtil.sendPlayerMessage(player, MessageUtil.parseMessage("buy.alreadymember"));
-						return;
-					} else {
 						Economy econ = plugin.getEconomy();
+						Permission perm = plugin.getPermission();
+
 						int price = Integer.parseInt(section.getString("price"));
 
 						if (econ.hasAccount(player.getName()) && econ.getBalance(player.getName()) >= price) {
 							econ.withdrawPlayer(player.getName(), price);
 
-							DefaultDomain memberDomain = region.getMembers();
-							memberDomain.addPlayer(player.getName());
+							/* Apply effects */
+							ConfigurationSection effects = section.getConfigurationSection("effects");
 
-							try {
-								regionMng.save();
-								ChatUtil.sendPlayerMessage(player, MessageUtil.parseMessage("buy.success", name));
-							} catch (Exception e) {
-								player.sendMessage(ChatColor.RED + "Could not save region: " + e.getMessage());
+							if (effects.isSet("regions")) {
+								ArrayList<String> regionList = (ArrayList<String>) effects.getStringList("regions");
+
+								for (String region : regionList) {
+									try {
+										RegionManager regionMng = plugin.getWorldGuard().getRegionManager(player.getWorld());
+										ProtectedRegion protRegion = regionMng.getRegions().get(region);
+										protRegion.getMembers().addPlayer(player.getName());
+
+										regionMng.save();
+									} catch (Exception e) {
+										player.sendMessage(ChatColor.RED + "Could not save region: " + e.getMessage());
+									}
+								}
 							}
 
-						} else {
-							ChatUtil.sendPlayerMessage(player, MessageUtil.parseMessage("buy.notenoughmoney", section.getString("price")));
-						}
-					}
+							if (effects.isSet("groups")) {
+								ArrayList<String> groupList = (ArrayList<String>) effects.getStringList("groups");
 
-					return;
+								for (String group : groupList) {
+									String[] userGroups = perm.getPlayerGroups(player);
+
+									for (String str : userGroups)
+										perm.playerRemoveGroup(player, str);
+
+									perm.playerAddGroup(player, group);
+								}
+							}
+
+							if (effects.isSet("permissions")) {
+								ArrayList<String> permissionsList = (ArrayList<String>) effects.getStringList("permissions");
+
+								for (String permission : permissionsList) {
+									perm.playerAdd(player, permission);
+								}
+							}
+
+
+							plugin.getPlayerConfigManager().addPlayerToList(name, player);
+							plugin.getPlayerConfigManager().get().set(name, playerList);
+
+							plugin.getPlayerConfigManager().save();
+
+							ChatUtil.sendPlayerMessage(player, MessageUtil.parseMessage("buy.success", name));
+						} else {
+							ChatUtil.sendPlayerMessage(player, MessageUtil.parseMessage("buy.notenoughmoney", name, section.getString("price")));
+						}
+
+						return;
+					}
 				}
 			}
 		}

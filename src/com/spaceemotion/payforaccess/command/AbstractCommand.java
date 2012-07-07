@@ -98,20 +98,20 @@ public abstract class AbstractCommand {
 		return usage;
 	}
 
-	public boolean workingRegionIsSet(Player player) {
-		return workingRegionIsSet(player.getName());
+	public boolean workingTriggerIsSet(Player player) {
+		return workingTriggerIsSet(player.getName());
 	}
 
-	public boolean workingRegionIsSet(Player player, boolean showError) {
-		return workingRegionIsSet(player.getName(), showError);
+	public boolean workingTriggerIsSet(Player player, boolean showError) {
+		return workingTriggerIsSet(player.getName(), showError);
 	}
 
-	public boolean workingRegionIsSet(String player) {
-		return workingRegionIsSet(player, true);
+	public boolean workingTriggerIsSet(String player) {
+		return workingTriggerIsSet(player, true);
 	}
 
-	public boolean workingRegionIsSet(String player, boolean showError) {
-		String region = plugin.getRegionConfigManager().getWorkingRegion(player);
+	public boolean workingTriggerIsSet(String player, boolean showError) {
+		String region = plugin.getRegionConfigManager().getWorkingTrigger(player);
 
 		if (region == null || region.isEmpty()) {
 			if (showError) setLastError(LanguageUtil.getString("select.notselected"));

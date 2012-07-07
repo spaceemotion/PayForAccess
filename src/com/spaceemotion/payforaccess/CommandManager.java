@@ -12,7 +12,8 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import com.spaceemotion.payforaccess.command.AbstractCommand;
-import com.spaceemotion.payforaccess.command.AddCommand;
+import com.spaceemotion.payforaccess.command.AddEffectCommand;
+import com.spaceemotion.payforaccess.command.AddLocationCommand;
 import com.spaceemotion.payforaccess.command.CreateCommand;
 import com.spaceemotion.payforaccess.command.EditCommand;
 import com.spaceemotion.payforaccess.command.HelpCommand;
@@ -43,7 +44,8 @@ public class CommandManager implements CommandExecutor {
 	private void registerCommands() {
 		addCommand("help", new HelpCommand(plugin));
 		addCommand("create", new CreateCommand(plugin));
-		addCommand("add", new AddCommand(plugin));
+		addCommand("addloc", new AddLocationCommand(plugin));
+		addCommand("addeffect", new AddEffectCommand(plugin));
 		addCommand("remove", new RemoveCommand(plugin));
 		addCommand("select", new SelectCommand(plugin));
 		addCommand("edit", new EditCommand(plugin));

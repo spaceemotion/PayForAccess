@@ -1,42 +1,53 @@
 # This is the english (default) config file for PayToEnter
-prefix: "&6[PayToEnter] "
+prefix: "&6[PayForAccess] "
 
 # Error strings
 error.commandnotfound: "Command not found: &4%0"
 error.arguments: "Argument length does not match with function &4%0"
 error.nopermission: "You do not have the permission to execute this command!"
 error.material: "Could not create region because no correct trigger material found!"
-error.defined: "Region &4%0&c already defined!"
-error.notexists: "Region &4%0&c does not exist. Please create a WorldGuard region first!"
-error.notfound: "Region &4%0&c has not been defined yet!"
+error.defined: "%0 has already been defined!"
+error.notexists: "%0 does not exist!"
+
+error.region.defined: "Region has already been defined!"
+error.region.notexists: "Region &4%0&c does not exist. Please create a WorldGuard region first!"
+error.region.notfound: "Region &4%0&c has not been defined yet!"
+
+error.permission.defined: "Permission has already been defined!"
+
+error.group.defined: "Group has already been defined!"
 
 # Add command strings
-add.success: "&aTrigger has been added to region '%0'"
+addloc.success: "&aTrigger has been added to '%0'"
+add.region.success: "&aAdded region '%0'"
+add.permission.success: "&aAdded permission '%0'"
+add.group.success: "&aAdded group '%0'"
 
 # Create command strings
-create.success: "&aRegion '%0' created with price %1"
+create.info: "Available types: %0"
+create.success: "&aTrigger '%0' created with price %1"
 
 # Edit command strings
 edit.info: "Editable properties: &7%0"
 edit.success: "Value &7%0&f of region &7%1&f has been set to &7%2"
 
 # List command strings
-list.found: "Found regions:"
+list.found: "%0 found:"
 list.format: "&6%NUMBER%. &f%NAME% at %LOCATION% &6(Price: &f%PRICE%&6)"
-list.empty: "No regions defined yet"
+list.empty: "Nothing defined yet"
 
 # Remove command strings
-remove.success: "&bRegion '%0' successfully deleted from list!"
+remove.success: "&a'%0' successfully deleted!"
 
 # Select command strings
-select.selected: "&aRegion &2%0&a has been selected for editing"
-select.deselected: "&aRegion &2%0&a has been deselected"
-select.notselected: "&cNo region has been selected for editing!"
+select.selected: "&a&2%0&a has been selected for editing"
+select.deselected: "&a&2%0&a has been deselected"
+select.notselected: "&cNothing has been selected for editing!"
 
 # Buy strings
-buy.notenoughmoney: "&cYou don't have enough money to enter this region! (Needed Money: %0)"
-buy.success: "&bYou successfully bought access to region '%0'!"
-buy.alreadymember: "&bYou already bought access to this region!"
+buy.notenoughmoney: "&cYou don't have enough money to get access to %0! (Needed Money: %1)"
+buy.success: "&bYou successfully bought access to %0!"
+buy.alreadymember: "&bYou already bought access to %0!"
 
 # Used for generated sentences (Like 'and' in 'A,B and C')
 vocab.and: "and"

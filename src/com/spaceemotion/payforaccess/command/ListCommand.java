@@ -24,19 +24,19 @@ public class ListCommand extends AbstractCommand {
 
 	@Override
 	public boolean execute(CommandSender sender, String[] args) {
-		ArrayList<String> regionList = plugin.getRegionConfigManager().getRegionList();
+		ArrayList<String> list = plugin.getRegionConfigManager().getTriggerList();
 
-		if (regionList == null || regionList.size() == 0) {
+		if (list == null || list.size() == 0) {
 			ChatUtil.sendPlayerMessage((Player) sender, LanguageUtil.getString("list.empty"));
 			return true;
 		}
 
-		ChatUtil.sendPlayerMessage((Player) sender, LanguageUtil.getString("list.found"));
+		ChatUtil.sendPlayerMessage((Player) sender, MessageUtil.parseMessage("list.found", Integer.toString(list.size())));
 		
-		String messages[] = new String[regionList.size()];
+		String messages[] = new String[list.size()];
 		
 		for (int i = 0; i < messages.length; i++) {
-			String name = regionList.get(i);
+			String name = list.get(i);
 			String msg = LanguageUtil.getString("list.format");
 
 			Map<String, String> replaceMap = new HashMap<String, String>();

@@ -23,9 +23,9 @@ public class SelectCommand extends AbstractCommand {
 		Player player = (Player) sender;
 
 		if (args.length == 1) {
-			if (!workingRegionIsSet(player.getName())) return false;
+			if (!workingTriggerIsSet(player.getName())) return false;
 
-			plugin.getRegionConfigManager().setWorkingRegion(player, "");
+			plugin.getRegionConfigManager().setWorkingTrigger(player, "");
 			return true;
 		} else {
 			if (!checkArguments(args, 1)) return false;
@@ -34,7 +34,7 @@ public class SelectCommand extends AbstractCommand {
 
 			if (!plugin.getRegionConfigManager().get().isSet(region)) setLastError(MessageUtil.parseMessage("error.notfound", region));
 			else {
-				plugin.getRegionConfigManager().setWorkingRegion(player, region);
+				plugin.getRegionConfigManager().setWorkingTrigger(player, region);
 				ChatUtil.sendPlayerMessage(player, MessageUtil.parseMessage("select.selected", region));
 			}
 

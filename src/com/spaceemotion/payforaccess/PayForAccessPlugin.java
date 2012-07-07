@@ -1,6 +1,7 @@
 package com.spaceemotion.payforaccess;
 
 import net.milkbowl.vault.economy.Economy;
+import net.milkbowl.vault.permission.Permission;
 
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.RegisteredServiceProvider;
@@ -8,20 +9,30 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 import com.spaceemotion.payforaccess.config.ConfigManager;
-import com.spaceemotion.payforaccess.config.RegionConfigManager;
+import com.spaceemotion.payforaccess.config.PlayerConfigManager;
+import com.spaceemotion.payforaccess.config.SavesConfigManager;
 import com.spaceemotion.payforaccess.listener.PlayerListener;
 
 
 public class PayForAccessPlugin extends JavaPlugin {
 	private static Economy econ = null;
-
+	private static Permission perm = null;
 	private static WorldGuardPlugin wgPlugin = null;
-	private RegionConfigManager configManager;
+	
+	private SavesConfigManager configManager;
+	private PlayerConfigManager playerConfigManager;
 	private ConfigManager languageConfigManager;
 
 
 	public void onEnable() {
 		/* Vault and WorldGuard integration */
+		if (!setupPermissions()) {
+			getLogger().info("Permission integration with Vault failed or no permission plugin found!");
+			getServer().getPluginManager().disablePlugin(this);
+
+			return;
+		}
+
 		if (!setupEconomy()) {
 			getLogger().info("Economy integration with Vault failed or no economy plugin found!");
 			getServer().getPluginManager().disablePlugin(this);
@@ -50,7 +61,8 @@ public class PayForAccessPlugin extends JavaPlugin {
 		this.saveConfig();
 
 
-		configManager = new RegionConfigManager();
+		configManager = new SavesConfigManager();
+		playerConfigManager = new PlayerConfigManager();
 		languageConfigManager = new ConfigManager(configManager.get().getString("language", getConfig().getString("language", "english")));
 		if (languageConfigManager.getName() != "english") languageConfigManager.setFallbackConfiguration("english");
 
@@ -64,7 +76,7 @@ public class PayForAccessPlugin extends JavaPlugin {
 	}
 
 
-	public RegionConfigManager getRegionConfigManager() {
+	public SavesConfigManager getRegionConfigManager() {
 		return configManager;
 	}
 
@@ -110,7 +122,28 @@ public class PayForAccessPlugin extends JavaPlugin {
 		return false;
 	}
 
+	private boolean setupPermissions() {
+		if (getServer().getPluginManager().getPlugin("Vault") != null) {
+			RegisteredServiceProvider<Permission> rsp = getServer().getServicesManager().getRegistration(Permission.class);
+
+			if (rsp != null) {
+				perm = rsp.getProvider();
+				return perm != null;
+			}
+		}
+
+		return false;
+	}
+
 	public Economy getEconomy() {
 		return econ;
+	}
+
+	public Permission getPermission() {
+		return perm;
+	}
+	
+	public PlayerConfigManager getPlayerConfigManager() {
+		return playerConfigManager;
 	}
 }
