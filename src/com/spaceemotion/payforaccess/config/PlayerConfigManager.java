@@ -19,7 +19,11 @@ public class PlayerConfigManager extends ConfigManager {
 	}
 
 	public Map<String, ArrayList<String>> getPlayerList() {
-		if (playerList == null) {
+		return getPlayerList(false);
+	}
+
+	public Map<String, ArrayList<String>> getPlayerList(boolean forceReload) {
+		if (forceReload || playerList == null) {
 			reload();
 			playerList = new HashMap<String, ArrayList<String>>();
 
@@ -38,8 +42,14 @@ public class PlayerConfigManager extends ConfigManager {
 	}
 
 	public void addPlayerToList(String name, Player player) {
-		if (playerList.containsKey(name) && !playerList.get(name).contains(player)) {
+		if (playerList.containsKey(name) && !playerList.get(name).contains(player.getName())) {
 			playerList.get(name).add(player.getName());
+		}
+	}
+
+	public void removePlayerFromList(String name, String player) {
+		if (playerList.containsKey(name) && playerList.get(name).contains(player)) {
+			playerList.get(name).remove(player);
 		}
 	}
 }

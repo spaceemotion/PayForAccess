@@ -45,12 +45,11 @@ public class PlayerListener implements Listener {
 			return;
 		}
 
-		ArrayList<String> list = plugin.getRegionConfigManager().getTriggerList();
+		ArrayList<String> list = plugin.getSavesConfigManager().getTriggerList();
 		if (list == null) return;
 
 		for (String name : list) {
-			ConfigurationSection section = plugin.getRegionConfigManager().get().getConfigurationSection(name);
-
+			ConfigurationSection section = plugin.getSavesConfigManager().get().getConfigurationSection(name);
 			ArrayList<String> locationList = (ArrayList<String>) section.getStringList("locations");
 
 			if (locationList != null && !locationList.isEmpty()) {
@@ -70,7 +69,9 @@ public class PlayerListener implements Listener {
 							plugin.getPlayerConfigManager().getPlayerList().put(name, playerList);
 						} else if (playerList.contains(player.getName())) {
 							/* Already bought access */
-							ChatUtil.sendPlayerMessage(player, MessageUtil.parseMessage("buy.alreadymember", name));
+							String msg = section.getString("messages.paid", MessageUtil.parseMessage("buy.alreadymember", name));
+							ChatUtil.sendPlayerMessage(player, msg);
+
 							return;
 						}
 
@@ -105,10 +106,12 @@ public class PlayerListener implements Listener {
 								ArrayList<String> groupList = (ArrayList<String>) effects.getStringList("groups");
 
 								for (String group : groupList) {
-									String[] userGroups = perm.getPlayerGroups(player);
+									if (section.getBoolean("overwrite-groups", true)) {
+										String[] userGroups = perm.getPlayerGroups(player);
 
-									for (String str : userGroups)
-										perm.playerRemoveGroup(player, str);
+										for (String str : userGroups)
+											perm.playerRemoveGroup(player, str);
+									}
 
 									perm.playerAddGroup(player, group);
 								}
@@ -128,9 +131,12 @@ public class PlayerListener implements Listener {
 
 							plugin.getPlayerConfigManager().save();
 
-							ChatUtil.sendPlayerMessage(player, MessageUtil.parseMessage("buy.success", name));
+							String msg = section.getString("messages.buy", MessageUtil.parseMessage("buy.success", name));
+							ChatUtil.sendPlayerMessage(player, msg);
+
 						} else {
-							ChatUtil.sendPlayerMessage(player, MessageUtil.parseMessage("buy.notenoughmoney", name, section.getString("price")));
+							String msg = section.getString("messages.notenoughmoney", MessageUtil.parseMessage("buy.notenoughmoney", name, section.getString("price")));
+							ChatUtil.sendPlayerMessage(player, msg);
 						}
 
 						return;

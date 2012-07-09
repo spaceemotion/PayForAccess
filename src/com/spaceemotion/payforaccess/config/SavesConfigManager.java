@@ -21,7 +21,11 @@ public class SavesConfigManager extends ConfigManager {
 	}
 
 	public ArrayList<String> getTriggerList() {
-		if (triggerList == null) {
+		return getTriggerList(false);
+	}
+
+	public ArrayList<String> getTriggerList(boolean forceReload) {
+		if (forceReload || triggerList == null) {
 			reload();
 			triggerList = new ArrayList<String>();
 

@@ -111,7 +111,7 @@ public abstract class AbstractCommand {
 	}
 
 	public boolean workingTriggerIsSet(String player, boolean showError) {
-		String region = plugin.getRegionConfigManager().getWorkingTrigger(player);
+		String region = plugin.getSavesConfigManager().getWorkingTrigger(player);
 
 		if (region == null || region.isEmpty()) {
 			if (showError) setLastError(LanguageUtil.getString("select.notselected"));

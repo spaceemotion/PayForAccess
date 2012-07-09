@@ -24,7 +24,7 @@ public class ListCommand extends AbstractCommand {
 
 	@Override
 	public boolean execute(CommandSender sender, String[] args) {
-		ArrayList<String> list = plugin.getRegionConfigManager().getTriggerList();
+		ArrayList<String> list = plugin.getSavesConfigManager().getTriggerList();
 
 		if (list == null || list.size() == 0) {
 			ChatUtil.sendPlayerMessage((Player) sender, LanguageUtil.getString("list.empty"));
@@ -43,31 +43,37 @@ public class ListCommand extends AbstractCommand {
 			replaceMap.put("name", name);
 			replaceMap.put("number", Integer.toString(i + 1));
 
-			ConfigurationSection region = plugin.getRegionConfigManager().get().getConfigurationSection(name);
-			ArrayList<String> locationList = (ArrayList<String>) region.getStringList("locations");
+			ConfigurationSection region = plugin.getSavesConfigManager().get().getConfigurationSection(name);
 
-			if (locationList != null && !locationList.isEmpty()) {
-				String vectorString = "";
+			if (region != null) {
+				ArrayList<String> locationList = (ArrayList<String>) region.getStringList("locations");
 
-				for (int j = 0; j < locationList.size(); j++) {
-					String loc = locationList.get(j);
+				if (locationList != null && !locationList.isEmpty()) {
+					String vectorString = "";
 
-					ArrayList<String> locs = (ArrayList<String>) ArrayUtil.stringToArrayList(loc, ",");
-					Vector vector = new Vector(0, 0, 0);
+					for (int j = 0; j < locationList.size(); j++) {
+						String loc = locationList.get(j);
 
-					vector.setX(Float.parseFloat(locs.get(0)));
-					vector.setY(Float.parseFloat(locs.get(1)));
-					vector.setZ(Float.parseFloat(locs.get(2)));
+						ArrayList<String> locs = (ArrayList<String>) ArrayUtil.stringToArrayList(loc, ",");
+						Vector vector = new Vector(0, 0, 0);
 
-					vectorString += "&7x &f" + vector.getX() + " &7y &f" + vector.getY() + " &7z &f" + vector.getZ();
-					if (j < locationList.size() - 2) vectorString += ", ";
-					else if (j < locationList.size() - 1) vectorString += " " + LanguageUtil.getString("vocab.and") + " ";
+						vector.setX(Float.parseFloat(locs.get(0)));
+						vector.setY(Float.parseFloat(locs.get(1)));
+						vector.setZ(Float.parseFloat(locs.get(2)));
+
+						vectorString += "&7x &f" + vector.getX() + " &7y &f" + vector.getY() + " &7z &f" + vector.getZ();
+						if (j < locationList.size() - 2) vectorString += ", ";
+						else if (j < locationList.size() - 1) vectorString += " " + LanguageUtil.getString("vocab.and") + " ";
+					}
+
+					replaceMap.put("location", vectorString);
 				}
 
-				replaceMap.put("location", vectorString);
+				replaceMap.put("price", Integer.toString(region.getInt("price")));
+			} else {
+				msg = msg + " &cINVALID TRIGGER";
 			}
 
-			replaceMap.put("price", Integer.toString(region.getInt("price")));
 
 			for (String key : replaceMap.keySet())
 				msg = msg.replaceAll("%" + key.toUpperCase() + "%", replaceMap.get(key));

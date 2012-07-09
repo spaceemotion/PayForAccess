@@ -31,10 +31,16 @@ create.success: "&aTrigger '%0' created with price %1"
 edit.info: "Editable properties: &7%0"
 edit.success: "Value &7%0&f of region &7%1&f has been set to &7%2"
 
+# Forget command strings
+forget.success: "&aTrigger &2%0&a forgot that player &2%1&a bought access!"
+
 # List command strings
 list.found: "%0 found:"
 list.format: "&6%NUMBER%. &f%NAME% at %LOCATION% &6(Price: &f%PRICE%&6)"
 list.empty: "Nothing defined yet"
+
+# Reload command strings
+reload: "Configuration files has been reloaded"
 
 # Remove command strings
 remove.success: "&a'%0' successfully deleted!"

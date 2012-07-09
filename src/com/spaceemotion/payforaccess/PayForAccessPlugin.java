@@ -76,7 +76,7 @@ public class PayForAccessPlugin extends JavaPlugin {
 	}
 
 
-	public SavesConfigManager getRegionConfigManager() {
+	public SavesConfigManager getSavesConfigManager() {
 		return configManager;
 	}
 

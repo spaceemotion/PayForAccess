@@ -23,22 +23,38 @@ public class AddEffectCommand extends AbstractCommand {
 		super(PermissionManager.EDIT, plugin);
 
 		description = "Add effect to trigger";
-		usage = "<type> <content>";
+		usage = "[<type> <content>]";
 	}
 
 	@Override
 	public boolean execute(CommandSender sender, String[] args) {
 		Player player = (Player) sender;
 		
+		if (!workingTriggerIsSet(player.getName())) return false;
+
 		if (args.length == 1) {
-			ChatUtil.sendPlayerMessage(player, MessageUtil.parseMessage("create.info", "region, permission, group"));
+			String str = "";
+
+			ArrayList<String> types = new ArrayList<String>();
+			types.add("region");
+			types.add("permission");
+			types.add("group");
+
+			for (int s = 0; s < types.size(); s++) {
+				str += "&7" + types.get(s);
+
+				if (s < types.size() - 2) str += "&f, ";
+				else if (s < types.size() - 1) str += " &f" + LanguageUtil.getString("vocab.and") + " ";
+			}
+
+			ChatUtil.sendPlayerMessage(player, MessageUtil.parseMessage("create.info", str));
 			return true;
 		}
 		
 		if (!workingTriggerIsSet(player.getName())) return false;
 		if (!checkArguments(args, 2)) return false;
 		
-		SavesConfigManager config = CommandManager.getPlugin().getRegionConfigManager();
+		SavesConfigManager config = CommandManager.getPlugin().getSavesConfigManager();
 
 		String name = config.getWorkingTrigger(player); 
 		String type = args[1];

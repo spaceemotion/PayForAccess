@@ -16,8 +16,10 @@ import com.spaceemotion.payforaccess.command.AddEffectCommand;
 import com.spaceemotion.payforaccess.command.AddLocationCommand;
 import com.spaceemotion.payforaccess.command.CreateCommand;
 import com.spaceemotion.payforaccess.command.EditCommand;
+import com.spaceemotion.payforaccess.command.ForgetCommand;
 import com.spaceemotion.payforaccess.command.HelpCommand;
 import com.spaceemotion.payforaccess.command.ListCommand;
+import com.spaceemotion.payforaccess.command.ReloadCommand;
 import com.spaceemotion.payforaccess.command.RemoveCommand;
 import com.spaceemotion.payforaccess.command.SelectCommand;
 import com.spaceemotion.payforaccess.util.ChatUtil;
@@ -43,13 +45,15 @@ public class CommandManager implements CommandExecutor {
 
 	private void registerCommands() {
 		addCommand("help", new HelpCommand(plugin));
+		addCommand("reload", new ReloadCommand(plugin));
+		addCommand("list", new ListCommand(plugin));
 		addCommand("create", new CreateCommand(plugin));
-		addCommand("addloc", new AddLocationCommand(plugin));
-		addCommand("addeffect", new AddEffectCommand(plugin));
 		addCommand("remove", new RemoveCommand(plugin));
 		addCommand("select", new SelectCommand(plugin));
+		addCommand("addloc", new AddLocationCommand(plugin));
+		addCommand("addeffect", new AddEffectCommand(plugin));
 		addCommand("edit", new EditCommand(plugin));
-		addCommand("list", new ListCommand(plugin));
+		addCommand("forget", new ForgetCommand(plugin));
 	}
 
 	private void addCommand(String name, AbstractCommand cmd) {

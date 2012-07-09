@@ -26,7 +26,7 @@ public class AddLocationCommand extends AbstractCommand {
 
 	@Override
 	public boolean execute(CommandSender sender, String[] args) {
-		SavesConfigManager regionManager = plugin.getRegionConfigManager();
+		SavesConfigManager regionManager = plugin.getSavesConfigManager();
 		Player player = (Player) sender;
 
 		if (!workingTriggerIsSet(player)) return false;

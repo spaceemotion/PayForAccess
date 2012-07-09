@@ -47,7 +47,7 @@ public class CreateCommand extends AbstractCommand {
 
 		Location location = target.getLocation();
 
-		SavesConfigManager config = CommandManager.getPlugin().getRegionConfigManager();
+		SavesConfigManager config = CommandManager.getPlugin().getSavesConfigManager();
 
 		if (config.get().isSet(name)) {
 			setLastError(MessageUtil.parseMessage("error.defined", name));

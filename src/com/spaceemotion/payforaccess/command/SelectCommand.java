@@ -25,16 +25,16 @@ public class SelectCommand extends AbstractCommand {
 		if (args.length == 1) {
 			if (!workingTriggerIsSet(player.getName())) return false;
 
-			plugin.getRegionConfigManager().setWorkingTrigger(player, "");
+			plugin.getSavesConfigManager().setWorkingTrigger(player, "");
 			return true;
 		} else {
 			if (!checkArguments(args, 1)) return false;
 
 			String region = args[1];
 
-			if (!plugin.getRegionConfigManager().get().isSet(region)) setLastError(MessageUtil.parseMessage("error.notfound", region));
+			if (!plugin.getSavesConfigManager().get().isSet(region)) setLastError(MessageUtil.parseMessage("error.notfound", region));
 			else {
-				plugin.getRegionConfigManager().setWorkingTrigger(player, region);
+				plugin.getSavesConfigManager().setWorkingTrigger(player, region);
 				ChatUtil.sendPlayerMessage(player, MessageUtil.parseMessage("select.selected", region));
 			}
 

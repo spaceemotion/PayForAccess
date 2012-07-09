@@ -26,12 +26,12 @@ public class RemoveCommand extends AbstractCommand {
 		String region = null;
 
 		if (args.length == 1 && workingTriggerIsSet(player)) {
-			region = plugin.getRegionConfigManager().getWorkingTrigger(player);
+			region = plugin.getSavesConfigManager().getWorkingTrigger(player);
 		} else if (!checkArguments(args, 1)) { return false; }
 
 		if (region == null) region = args[1];
 
-		SavesConfigManager regionManager = CommandManager.getPlugin().getRegionConfigManager();
+		SavesConfigManager regionManager = CommandManager.getPlugin().getSavesConfigManager();
 
 		if (!regionManager.get().isSet(region)) setLastError(MessageUtil.parseMessage("error.notexists", region));
 		else {

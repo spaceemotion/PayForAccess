@@ -43,7 +43,7 @@ public class HelpCommand extends AbstractCommand {
 		}
 
 		/* Are we currently working on a region? */
-		String workingRegion = plugin.getRegionConfigManager().getWorkingTrigger(((Player) sender).getName());
+		String workingRegion = plugin.getSavesConfigManager().getWorkingTrigger(((Player) sender).getName());
 		if (workingRegion != null && !workingRegion.isEmpty()) messages.add("&6Selected region: &7" + workingRegion);
 
 		/* And off we go! */
