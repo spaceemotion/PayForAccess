@@ -22,6 +22,7 @@ addloc.success: "&aTrigger has been added to '%0'"
 add.region.success: "&aAdded region '%0'"
 add.permission.success: "&aAdded permission '%0'"
 add.group.success: "&aAdded group '%0'"
+add.forget.success: "&aAdded forget of trigger '%0'"
 
 # Create command strings
 create.info: "Available types: %0"

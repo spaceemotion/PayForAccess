@@ -47,7 +47,11 @@ public class ChatUtil {
 		}
 	}
 
+	public static void log(String msg) {
+		CommandManager.getPlugin().getLogger().info(msg);
+	}
+
 	private static String getPrefix() {
-		return MessageUtil.parseMessage("prefix") + ChatColor.RESET;
+		return MessageUtil.parseColors(LanguageUtil.getString("prefix")) + ChatColor.RESET;
 	}
 }

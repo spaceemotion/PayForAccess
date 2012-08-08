@@ -21,6 +21,7 @@ public class ForgetCommand extends AbstractCommand {
 		usage = "[trigger] <player>";
 	}
 
+
 	@Override
 	public boolean execute(CommandSender sender, String[] args) {
 		if (args.length > 3 || args.length == 1) {
@@ -33,7 +34,7 @@ public class ForgetCommand extends AbstractCommand {
 
 			if (args.length == 2 && workingTriggerIsSet(player.getName())) {
 				select = plugin.getSavesConfigManager().getWorkingTrigger(player);
-				name = args[2];
+				name = args[1];
 			} else {
 				select = args[1];
 				name = args[2];
@@ -48,7 +49,10 @@ public class ForgetCommand extends AbstractCommand {
 				config.save();
 				config.removePlayerFromList(select, name);
 
-				ChatUtil.sendPlayerMessage(player, MessageUtil.parseMessage("forget.success", select, name));
+				if (useMessages) {
+					ChatUtil.sendPlayerMessage(player, MessageUtil.parseMessage("forget.success", select, name));
+				}
+
 				return true;
 			}
 		}

@@ -25,10 +25,5 @@
 			<type>1</type>
 			<locationURI>WORKSPACE_LOC/libraries/WorldGuard.jar</locationURI>
 		</link>
-		<link>
-			<name>bukkit-1.2.5-R4.1-20120629.003618-18.jar</name>
-			<type>1</type>
-			<locationURI>WORKSPACE_LOC/libraries/bukkit-1.2.5-R4.1-20120629.003618-18.jar</locationURI>
-		</link>
 	</linkedResources>
 </projectDescription>

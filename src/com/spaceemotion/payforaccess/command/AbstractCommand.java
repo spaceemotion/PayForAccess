@@ -20,6 +20,8 @@ public abstract class AbstractCommand {
 
 	protected final PayForAccessPlugin plugin;
 
+	protected boolean useMessages = true;
+
 
 	public AbstractCommand(String permission, PayForAccessPlugin plugin) {
 		this.plugin = plugin;
@@ -130,5 +132,9 @@ public abstract class AbstractCommand {
 		}
 
 		return true;
+	}
+
+	public void useMessages(boolean msg) {
+		this.useMessages = msg;
 	}
 }

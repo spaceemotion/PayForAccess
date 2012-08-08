@@ -39,6 +39,7 @@ public class AddEffectCommand extends AbstractCommand {
 			types.add("region");
 			types.add("permission");
 			types.add("group");
+			types.add("forget");
 
 			for (int s = 0; s < types.size(); s++) {
 				str += "&7" + types.get(s);
@@ -97,6 +98,17 @@ public class AddEffectCommand extends AbstractCommand {
 			} else {
 				groups.add(content);
 				effects.set("groups", groups);
+			}
+		} else if (type.equalsIgnoreCase("forget")) {
+			ArrayList<String> forgets = (ArrayList<String>) effects.getStringList("forgets");
+
+			if (!config.getTriggerList().contains(content)) {
+				setLastError(LanguageUtil.getString("error.notexists"));
+			} else if (forgets.contains(content)) {
+				setLastError(LanguageUtil.getString("error.forget.defined"));
+			} else {
+				forgets.add(content);
+				effects.set("forgets", forgets);
 			}
 		}
 

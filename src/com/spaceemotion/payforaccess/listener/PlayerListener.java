@@ -20,6 +20,7 @@ import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import com.spaceemotion.payforaccess.CommandManager;
 import com.spaceemotion.payforaccess.PayForAccessPlugin;
 import com.spaceemotion.payforaccess.PermissionManager;
+import com.spaceemotion.payforaccess.command.ForgetCommand;
 import com.spaceemotion.payforaccess.util.ArrayUtil;
 import com.spaceemotion.payforaccess.util.ChatUtil;
 import com.spaceemotion.payforaccess.util.MessageUtil;
@@ -122,6 +123,22 @@ public class PlayerListener implements Listener {
 
 								for (String permission : permissionsList) {
 									perm.playerAdd(player, permission);
+								}
+							}
+
+							if (effects.isSet("forgets")) {
+								ArrayList<String> forgetList = (ArrayList<String>) effects.getStringList("forgets");
+								ForgetCommand cmd = new ForgetCommand(plugin);
+								cmd.useMessages(false);
+
+								for (String forget : forgetList) {
+									String[] args = { "forget", forget, player.getName() };
+
+									if (!cmd.execute(player, args)) {
+										ChatUtil.sendPlayerMessage(player, ChatColor.RED + "Error: " + cmd.getLastError());
+									}
+
+									cmd.clearErrors();
 								}
 							}
 
