@@ -9,6 +9,7 @@ import com.spaceemotion.payforaccess.PayForAccessPlugin;
 import com.spaceemotion.payforaccess.PermissionManager;
 import com.spaceemotion.payforaccess.config.PlayerConfigManager;
 import com.spaceemotion.payforaccess.util.ChatUtil;
+import com.spaceemotion.payforaccess.util.LanguageUtil;
 import com.spaceemotion.payforaccess.util.MessageUtil;
 
 
@@ -35,6 +36,10 @@ public class ForgetCommand extends AbstractCommand {
 			if (args.length == 2 && workingTriggerIsSet(player.getName())) {
 				select = plugin.getSavesConfigManager().getWorkingTrigger(player);
 				name = args[1];
+			} else if (args.length == 2 && !workingTriggerIsSet(player.getName())) {
+				if (useMessages) ChatUtil.sendPlayerMessage(player, LanguageUtil.getString("select.notselected"));
+
+				return false;
 			} else {
 				select = args[1];
 				name = args[2];

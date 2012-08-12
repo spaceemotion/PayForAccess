@@ -40,6 +40,7 @@ public class AddEffectCommand extends AbstractCommand {
 			types.add("permission");
 			types.add("group");
 			types.add("forget");
+			types.add("command");
 
 			for (int s = 0; s < types.size(); s++) {
 				str += "&7" + types.get(s);
@@ -110,12 +111,21 @@ public class AddEffectCommand extends AbstractCommand {
 				forgets.add(content);
 				effects.set("forgets", forgets);
 			}
+		} else if (type.equalsIgnoreCase("command")) {
+			ArrayList<String> cmds = (ArrayList<String>) effects.getStringList("commands");
+
+			if (cmds.contains(content)) {
+				setLastError(MessageUtil.parseMessage("error.cmd.defined", content));
+			} else {
+				cmds.add(content);
+				effects.set("commands", cmds);
+			}
 		}
 
 		if(getLastError().isEmpty()) {
 			config.save();
 
-			ChatUtil.sendPlayerMessage(player, MessageUtil.parseMessage("create.success", content));
+			ChatUtil.sendPlayerMessage(player, MessageUtil.parseMessage("create.success", name, type, content));
 			
 			return true;
 		} else {

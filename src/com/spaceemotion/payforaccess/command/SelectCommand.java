@@ -32,7 +32,7 @@ public class SelectCommand extends AbstractCommand {
 
 			String region = args[1];
 
-			if (!plugin.getSavesConfigManager().get().isSet(region)) setLastError(MessageUtil.parseMessage("error.notfound", region));
+			if (!plugin.getSavesConfigManager().get().isSet(region)) setLastError(MessageUtil.parseMessage("error.region.notfound", region));
 			else {
 				plugin.getSavesConfigManager().setWorkingTrigger(player, region);
 				ChatUtil.sendPlayerMessage(player, MessageUtil.parseMessage("select.selected", region));

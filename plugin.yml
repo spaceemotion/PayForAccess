@@ -1,6 +1,6 @@
 name: PayForAccess
 main: com.spaceemotion.payforaccess.PayForAccessPlugin
-version: 1.2
+version: 1.2.1
 author: SpaceEmotion
 
 permissions:

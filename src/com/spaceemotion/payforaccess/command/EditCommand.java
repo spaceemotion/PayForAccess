@@ -35,6 +35,10 @@ public class EditCommand extends AbstractCommand {
 		types.add("msg-notenoughmoney");
 		types.add("msg-buy");
 		types.add("msg-paid");
+		types.add("msg-limit");
+		types.add("as-owner");
+		types.add("server-cmd");
+		types.add("max-players");
 
 		if (args.length == 1) {
 			String str = "";
@@ -80,13 +84,20 @@ public class EditCommand extends AbstractCommand {
 					messages.set("buy", value);
 				} else if (key.equalsIgnoreCase("msg-paid")) {
 					messages.set("paid", value);
+				} else if (key.equalsIgnoreCase("msg-limit")) {
+					messages.set("limit", value);
 				}
-
 			} else if (checkArguments(args, 2)) {
 				if (key.equalsIgnoreCase("price")) {
 					section.set("price", Integer.parseInt(value));
 				} else if (key.equalsIgnoreCase("overwrite-groups")) {
 					section.set("overwrite-groups", Boolean.parseBoolean(value));
+				} else if (key.equalsIgnoreCase("as-owner")) {
+					section.set("as-owner", Boolean.parseBoolean(value));
+				} else if (key.equalsIgnoreCase("server-cmd")) {
+					section.set("server-cmd", Boolean.parseBoolean(value));
+				} else if (key.equalsIgnoreCase("max-players")) {
+					section.set("max-players", Integer.parseInt(value));
 				}
 			}
 

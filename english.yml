@@ -17,6 +17,8 @@ error.permission.defined: "Permission has already been defined!"
 
 error.group.defined: "Group has already been defined!"
 
+error.cmd.defined: "Command '%0' has already been defined!"
+
 # Add command strings
 addloc.success: "&aTrigger has been added to '%0'"
 add.region.success: "&aAdded region '%0'"
@@ -26,7 +28,7 @@ add.forget.success: "&aAdded forget of trigger '%0'"
 
 # Create command strings
 create.info: "Available types: %0"
-create.success: "&aTrigger '%0' created with price %1"
+create.success: "&aProperty '%0' of trigger '%1' changed to '%2'"
 
 # Edit command strings
 edit.info: "Editable properties: &7%0"
@@ -55,6 +57,7 @@ select.notselected: "&cNothing has been selected for editing!"
 buy.notenoughmoney: "&cYou don't have enough money to get access to %0! (Needed Money: %1)"
 buy.success: "&bYou successfully bought access to %0!"
 buy.alreadymember: "&bYou already bought access to %0!"
+buy.limit: "&cMaximum players reached (Allowed players: %0)"
 
 # Used for generated sentences (Like 'and' in 'A,B and C')
 vocab.and: "and"

@@ -23,6 +23,7 @@ import com.spaceemotion.payforaccess.PermissionManager;
 import com.spaceemotion.payforaccess.command.ForgetCommand;
 import com.spaceemotion.payforaccess.util.ArrayUtil;
 import com.spaceemotion.payforaccess.util.ChatUtil;
+import com.spaceemotion.payforaccess.util.CommandUtil;
 import com.spaceemotion.payforaccess.util.MessageUtil;
 
 
@@ -76,6 +77,15 @@ public class PlayerListener implements Listener {
 							return;
 						}
 
+						int maxPlayers = section.getInt("max-players", 0);
+
+						if (maxPlayers != 0 && playerList.size() + 1 > maxPlayers) {
+							String msg = section.getString("messages.limit", MessageUtil.parseMessage("buy.limit", Integer.toString(maxPlayers)));
+							ChatUtil.sendPlayerMessage(player, msg);
+
+							return;
+						}
+
 						Economy econ = plugin.getEconomy();
 						Permission perm = plugin.getPermission();
 
@@ -94,7 +104,9 @@ public class PlayerListener implements Listener {
 									try {
 										RegionManager regionMng = plugin.getWorldGuard().getRegionManager(player.getWorld());
 										ProtectedRegion protRegion = regionMng.getRegions().get(region);
-										protRegion.getMembers().addPlayer(player.getName());
+
+										if (section.getBoolean("is-owner", false)) protRegion.getOwners().addPlayer(player.getName());
+										else protRegion.getMembers().addPlayer(player.getName());
 
 										regionMng.save();
 									} catch (Exception e) {
@@ -142,6 +154,15 @@ public class PlayerListener implements Listener {
 								}
 							}
 
+							if (effects.isSet("commands")) {
+								ArrayList<String> cmdList = (ArrayList<String>) effects.getStringList("commands");
+
+								for (String cmd : cmdList) {
+									if (section.getBoolean("server-cmd", true)) CommandUtil.execAsServer(cmd);
+									else CommandUtil.execAsPlayer(cmd, player);
+								}
+
+							}
 
 							plugin.getPlayerConfigManager().addPlayerToList(name, player);
 							plugin.getPlayerConfigManager().get().set(name, playerList);
