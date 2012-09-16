@@ -12,9 +12,12 @@ import com.spaceemotion.payforaccess.config.ConfigManager;
 import com.spaceemotion.payforaccess.config.PlayerConfigManager;
 import com.spaceemotion.payforaccess.config.SavesConfigManager;
 import com.spaceemotion.payforaccess.listener.PlayerListener;
+import com.spaceemotion.updater.Updater;
 
 
 public class PayForAccessPlugin extends JavaPlugin {
+	private Updater pluginUpdater;
+
 	private static Economy econ = null;
 	private static Permission perm = null;
 	private static WorldGuardPlugin wgPlugin = null;
@@ -25,6 +28,10 @@ public class PayForAccessPlugin extends JavaPlugin {
 
 
 	public void onEnable() {
+		/* Check for updates first! */
+		pluginUpdater = new Updater(this, getConfig().getBoolean("auto-update", true));
+
+
 		/* Vault and WorldGuard integration */
 		if (!setupPermissions()) {
 			getLogger().info("Permission integration with Vault failed or no permission plugin found!");
@@ -60,6 +67,13 @@ public class PayForAccessPlugin extends JavaPlugin {
 		getConfig().options().copyDefaults(true);
 		this.saveConfig();
 
+		/* Enable PluginMetrics to collect data */
+		try {
+			Metrics metrics = new Metrics(this);
+			metrics.start();
+		} catch (Exception e) {
+			getLogger().info("Failed to enable metrics!");
+		}
 
 		configManager = new SavesConfigManager();
 		playerConfigManager = new PlayerConfigManager();
@@ -145,5 +159,9 @@ public class PayForAccessPlugin extends JavaPlugin {
 	
 	public PlayerConfigManager getPlayerConfigManager() {
 		return playerConfigManager;
+	}
+
+	public Updater getPluginUpdater() {
+		return pluginUpdater;
 	}
 }

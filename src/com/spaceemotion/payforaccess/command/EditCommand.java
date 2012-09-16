@@ -2,6 +2,7 @@ package com.spaceemotion.payforaccess.command;
 
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.ConfigurationSection;
@@ -11,46 +12,39 @@ import com.spaceemotion.payforaccess.PayForAccessPlugin;
 import com.spaceemotion.payforaccess.PermissionManager;
 import com.spaceemotion.payforaccess.config.SavesConfigManager;
 import com.spaceemotion.payforaccess.util.ChatUtil;
-import com.spaceemotion.payforaccess.util.LanguageUtil;
 import com.spaceemotion.payforaccess.util.MessageUtil;
 
 public class EditCommand extends AbstractCommand {
+	private List<Type> types;
+
 
 	public EditCommand(PayForAccessPlugin plugin) {
 		super(PermissionManager.EDIT, plugin);
 
 		description = "Edit properties of a saved region";
 		usage = "[<property> <value>]";
+
+		types = new ArrayList<Type>();
+		types.add(new Type("price", "The amount of money that is needed to buy the access"));
+		types.add(new Type("overwrite-groups", "Overwrite the groups the player is in or not"));
+		types.add(new Type("msg-notenoughmoneys", "Custom message for 'not enough money'"));
+		types.add(new Type("msg-buy", "Custom message when buying"));
+		types.add(new Type("msg-paid", "Custom message when already paid"));
+		types.add(new Type("msg-limit", "Custom message when the limit is reached"));
+		types.add(new Type("as-owner", "If the player should be added as owner instead of member"));
+		types.add(new Type("server-cmd", "Execute commands as server or player"));
+		types.add(new Type("max-players", "The player limit for this region"));
+		types.add(new Type("time-limit", "The 'renting' time"));
 	}
 
 	@Override
 	public boolean execute(CommandSender sender, String[] args) {
 		Player player = (Player) sender;
 
-		if (!workingTriggerIsSet(player.getName())) return false;
-
-		ArrayList<String> types = new ArrayList<String>();
-		types.add("price");
-		types.add("overwrite-groups");
-		types.add("msg-notenoughmoney");
-		types.add("msg-buy");
-		types.add("msg-paid");
-		types.add("msg-limit");
-		types.add("as-owner");
-		types.add("server-cmd");
-		types.add("max-players");
-
-		if (args.length == 1) {
-			String str = "";
-
-			for (int s = 0; s < types.size(); s++) {
-				str += "&7" + types.get(s);
-
-				if (s < types.size() - 2) str += "&f, ";
-				else if (s < types.size() - 1) str += " &f" + LanguageUtil.getString("vocab.and") + " ";
-			}
-
-			ChatUtil.sendPlayerMessage(player, MessageUtil.parseMessage("edit.info", str));
+		if (!workingTriggerIsSet(player.getName())) {
+			return false;
+		} else if (args.length == 1) {
+			this.displayHelp(player);
 
 			return true;
 		} else {
@@ -110,6 +104,24 @@ public class EditCommand extends AbstractCommand {
 		}
 		
 		return false;
+	}
+
+	private void displayHelp(Player player) {
+		int size = types.size();
+		String[] messages = new String[size];
+
+		for (int s = 0; s < size; ++s) {
+			Type type = types.get(s);
+			String msg = "&a" + type.getName();
+
+			if (!type.getDescription().isEmpty()) msg += "&7 " + type.getDescription();
+			else msg += "&8 (No description available)";
+
+			messages[s] = MessageUtil.parseColors(msg);
+		}
+
+		ChatUtil.sendPlayerMessage(player, MessageUtil.parseMessage("edit.info", Integer.toString(size)));
+		ChatUtil.splitSendMessage(messages, false);
 	}
 
 }

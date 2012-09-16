@@ -11,4 +11,5 @@ public class PermissionManager {
 	public static final String LIST = PREFIX + ".list";
 	public static final String REMOVE = PREFIX + ".remove";
 	public static final String SELECT = PREFIX + ".select";
+	public static final String UPDATE_MSG = PREFIX + ".update_msg";
 }

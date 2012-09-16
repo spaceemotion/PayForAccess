@@ -31,7 +31,7 @@ public class HelpCommand extends AbstractCommand {
 		messages.add(MessageUtil.parseColors(s + " " + header + " " + s));
 
 		/* Generate the command list */
-		for (int i = 0; i < size; i++) {
+		for (int i = 0; i < size; ++i) {
 			String key = CommandManager.getIndexList().get(i);
 			AbstractCommand cmd = CommandManager.getCommandList().get(key);
 			String msg = "&a/pfa " + key + " &2" + cmd.getUsage();

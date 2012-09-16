@@ -48,6 +48,10 @@ permissions:
   payforaccess.select:
     description: Select a trigger for further editing
     default: op
+    
+  payforaccess.update_msg:
+    description: Get an update notification
+    default: op
 
 commands:
   pfa:

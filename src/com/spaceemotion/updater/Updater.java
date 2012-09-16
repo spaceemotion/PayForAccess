@@ -1,34 +1,118 @@
 package com.spaceemotion.updater;
 
-import java.util.Map;
+import java.io.InputStream;
+import java.net.URL;
 
-import org.bukkit.configuration.file.FileConfiguration;
+import javax.xml.parsers.DocumentBuilderFactory;
 
-import com.spaceemotion.payforaccess.PayForAccessPlugin;
+import org.bukkit.plugin.java.JavaPlugin;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 
 public class Updater {
-	private static final double VERSION = 2.0;
+	private final JavaPlugin plugin;
+	private final boolean do_update;
 
-	private static Map<String, String> data;
-	private static double newVersion;
-	private static String reason, urgency;
+	private final String plugin_name;
+	private final String update_url;
+	private final double current_version;
+	private final String current_version_str;
+	
+	private double new_version;
+	private String new_version_str;
+
+	private int sched_id;
+	private boolean update_available = false;
+	private String update_message;
 
 
-	public static boolean isUpToDate(PayForAccessPlugin plugin) {
-		FileConfiguration config = plugin.getConfig();
-		if (config.getString("updater.channel").equalsIgnoreCase("none")) return true;
+	public Updater(JavaPlugin plugin, boolean doUpdate) {
+		this.plugin = plugin;
+		this.do_update = doUpdate;
 
-		String chn = config.getString("updater.channel");
+		this.plugin_name = plugin.getName();
+		this.current_version_str = plugin.getDescription().getVersion();
+		this.current_version = Double.parseDouble(current_version_str.replaceFirst("\\.", "").replace("/", ""));
 
-		data = Fetcher.getData(chn);
-		if (data == null) return true;
-		else {
-			if (Boolean.parseBoolean(data.get("update")) == true) {
+		this.update_url = "http://dev.bukkit.org/server-mods/" + plugin_name + "/files.rss";
 
+		if (this.do_update) {
+			initialize();
+			checkForUpdate();
+		}
+	}
+	
+	private void initialize() {
+		sched_id = plugin.getServer().getScheduler().scheduleAsyncRepeatingTask(plugin, new Runnable() {
+			public void run() {
+				checkForUpdate();
 			}
+		}, 30 * 1200, 30 * 1200);
+	}
+
+	private void checkForUpdate() {
+		new_version = getNewVersion(this.current_version);
+
+		if (new_version > current_version) {
+			update_available = true;
+
+			displayUpdateMsg();
+		} else plugin.getLogger().info("Running latest version (v" + current_version + "), no new updates available!");
+	}
+
+	private double getNewVersion(double currentVersion) {
+		try {
+			URL url = new URL(update_url);
+			InputStream in = url.openConnection().getInputStream();
+
+			Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(in);
+			doc.getDocumentElement().normalize();
+
+			NodeList nodes = doc.getElementsByTagName("item");
+			Node first = nodes.item(0);
+
+			if (first.getNodeType() == 1) {
+				NodeList titleNode = ((Element) first).getElementsByTagName("title");
+				NodeList firstNodes = titleNode.item(0).getChildNodes();
+
+				new_version_str = firstNodes.item(0).getNodeValue().replace(plugin_name + " v", "").trim();
+				return Double.parseDouble(new_version_str.replaceFirst("\\.", "").replace("/", ""));
+			}
+		} catch (Exception e) {
+			displayUpdateMsg(false);
 		}
 
-		return false;
+		return current_version;
+	}
+
+	private void displayUpdateMsg() {
+		displayUpdateMsg(true);
+	}
+
+	private void displayUpdateMsg(boolean success) {
+		String out;
+
+		if (success) out = "New version available: v" + new_version_str;
+		else out = "Updater failed to get new version!";
+
+		out += " (running v" + current_version_str + ")";
+
+		update_message = out;
+		plugin.getLogger().info(out);
+	}
+
+	public int getSchedulerId() {
+		return sched_id;
+	}
+
+	public boolean updateIsAvailable() {
+		return update_available;
+	}
+
+	public String getUpdateMessage() {
+		return update_message;
 	}
 }

@@ -1,6 +1,8 @@
 package com.spaceemotion.payforaccess.listener;
 
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.permission.Permission;
@@ -13,6 +15,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.util.Vector;
 
 import com.sk89q.worldguard.protection.managers.RegionManager;
@@ -25,6 +28,7 @@ import com.spaceemotion.payforaccess.util.ArrayUtil;
 import com.spaceemotion.payforaccess.util.ChatUtil;
 import com.spaceemotion.payforaccess.util.CommandUtil;
 import com.spaceemotion.payforaccess.util.MessageUtil;
+import com.spaceemotion.updater.Updater;
 
 
 public class PlayerListener implements Listener {
@@ -32,7 +36,20 @@ public class PlayerListener implements Listener {
 	public PlayerListener(PayForAccessPlugin plugin) {
 		plugin.getServer().getPluginManager().registerEvents(this, plugin);
 	}
+
+	@EventHandler
+	public void onPlayerJoinEvent(PlayerJoinEvent event) {
+		PayForAccessPlugin plugin = CommandManager.getPlugin();
+		Player player = event.getPlayer();
 		
+		if (player.hasPermission(PermissionManager.UPDATE_MSG)) {
+			Updater updater = plugin.getPluginUpdater();
+
+			if (updater.updateIsAvailable()) {
+				ChatUtil.sendPlayerMessage(player, updater.getUpdateMessage());
+			}
+		}
+	}
 
 	@EventHandler
 	public void onPlayerInteractEvent(PlayerInteractEvent event) {
@@ -64,12 +81,11 @@ public class PlayerListener implements Listener {
 					Location dist = block.getLocation().subtract(lVec);
 
 					if (dist.getBlockX() == 0 && dist.getBlockY() == 0 && dist.getBlockZ() == 0) {
-						ArrayList<String> playerList = (ArrayList<String>) plugin.getPlayerConfigManager().getPlayerList().get(name);
+						Set<String> players = plugin.getPlayerConfigManager().getPlayerListOfTrigger(name);
 
-						if (playerList == null) {
-							playerList = new ArrayList<String>();
-							plugin.getPlayerConfigManager().getPlayerList().put(name, playerList);
-						} else if (playerList.contains(player.getName())) {
+						if(players == null) {
+							players = new HashSet<String>();
+						} else if (players.contains(player.getName())) {
 							/* Already bought access */
 							String msg = section.getString("messages.paid", MessageUtil.parseMessage("buy.alreadymember", name));
 							ChatUtil.sendPlayerMessage(player, msg);
@@ -79,7 +95,7 @@ public class PlayerListener implements Listener {
 
 						int maxPlayers = section.getInt("max-players", 0);
 
-						if (maxPlayers != 0 && playerList.size() + 1 > maxPlayers) {
+						if (maxPlayers != 0 && players.size() + 1 > maxPlayers) {
 							String msg = section.getString("messages.limit", MessageUtil.parseMessage("buy.limit", Integer.toString(maxPlayers)));
 							ChatUtil.sendPlayerMessage(player, msg);
 
@@ -165,8 +181,6 @@ public class PlayerListener implements Listener {
 							}
 
 							plugin.getPlayerConfigManager().addPlayerToList(name, player);
-							plugin.getPlayerConfigManager().get().set(name, playerList);
-
 							plugin.getPlayerConfigManager().save();
 
 							String msg = section.getString("messages.buy", MessageUtil.parseMessage("buy.success", name));
